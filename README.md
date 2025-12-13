@@ -1,84 +1,100 @@
-# Bellman Error Centering
+# BEC
 
-## 目录结构
+这个项目实现了多种强化学习算法，并在不同的 Gym 环境中进行了测试和比较。
 
-- `algorithms.py`: 包含实际使用的强化学习算法的实现
-- `maze_environment.py`: Maze环境及训练函数
-- `acrobot_environment.py`: Acrobot环境及训练函数
-- `cliffwalking_environment.py`: Cliff Walking环境及训练函数
-- `mountaincar_environment.py`: Mountain Car环境及训练函数
-- `twostate_environment.py`: Two State Counter Example环境及训练函数
-- `sevenstate_environment.py`: Seven State Counter Example环境及训练函数
-- `run_training.py`: 主训练脚本执行器
-- `run_plots.py`: 绘图脚本执行器
 
 ## 环境配置
 
-### Python环境要求
-- Python 3.6 或更高版本
-- 依赖库:
-  - numpy
-  - matplotlib
+### Python版本要求
 
-### 安装依赖
+推荐使用 Python 3.8 或更高版本。
+
+### 依赖库安装
+
+
+
 ```bash
-pip install numpy matplotlib
+pip install -r requirements.txt
 ```
 
-或者使用conda:
+
+
+## 运行方式
+
+### 单独运行某个环境的训练
+
+进入特定环境目录并运行主程序：
+
 ```bash
-conda install numpy matplotlib
+cd Acrobot
+python main.py
+
+cd ../Cliff_Walking
+python main.py
+
+cd ../Maze
+python main.py
+
+cd ../Mountain_Car
+python main.py
 ```
 
-## 功能说明
+### 并行运行所有环境的训练
 
-### 算法实现 (algorithms.py)
+在项目根目录下运行：
 
-实现了以下实际使用的强化学习算法:
-1. TDC (对应曲线GQ和TDC)
-2. ImprovedTDC (对应曲线CGQ)
-3. QLearning (对应曲线Q)
-4. VMQ (对应曲线CQ)
-5. TD (对应曲线TD)
-6. VMTD (对应曲线CTD)
-7. VMTDC (对应曲线CTDC)
+```bash
+python run_training_scripts.py
+```
 
-### 环境实现
+可以通过修改 [training_configs.json](file:///home/coco/workspaces/code_gongyu_rebuild/training_configs.json) 来控制哪些环境参与训练：
 
-每个环境文件包含:
-1. 环境类定义
-2. 训练函数，用于训练该环境下的所有算法
+```json
+{
+  "Maze": 1,         // 1表示启用，0表示禁用
+  "Acrobot": 1,
+  "CliffWalking": 1,
+  "MountainCar": 1,
+  "TwoState": 1,
+  "SevenState": 1
+}
+```
 
-### 训练脚本 (run_training.py)
+### 绘制所有环境的结果图表
 
-主训练脚本，负责:
-1. 调用各环境的训练函数
-2. 管理训练主循环
-3. 保存训练结果
+训练完成后，在项目根目录下运行：
 
-### 绘图脚本 (run_plots.py)
+```bash
+python run_all_plots.py
+```
 
-绘图脚本，负责:
-1. 加载训练数据
-2. 生成各环境的训练结果图表
-3. 保存图表到plots目录
+这将为所有环境生成相应的性能对比图表。图标保存在img目录下。
 
-## 使用方法
+## 算法实现
 
-1. 运行训练:
-   ```
-   python run_training.py
-   ```
+项目实现了以下几种强化学习算法：
 
-2. 运行绘图:
-   ```
-   python run_plots.py
-   ```
+1. **GQ|TDC**
+2. **CGQ|CTDC**
+3. **Q|TD**
+4. **CQ|CTD**
 
-## 数据流
+这些算法在不同环境中进行测试，并比较它们的收敛速度和稳定性。
 
-1. `run_training.py` 调用各环境的训练函数
-2. 各环境文件使用 `algorithms.py` 中的算法进行训练
-3. 训练结果保存在 `training_data` 目录中
-4. `run_plots.py` 读取训练数据并生成图表
-5. 图表保存在 `plots` 目录中
+## 实验环境
+
+- Acrobot-v1: 经典的双摆杆控制问题
+- CliffWalking-v0: 悬崖行走问题
+- MountainCar-v0: 上山车问题
+- 自定义迷宫环境: 简单的路径规划问题
+- Baird反例: 包含两状态和七状态的反例环境，用于测试算法的收敛性
+
+## 结果查看
+
+训练结果保存在 [results](file:///home/coco/workspaces/code_gongyu_rebuild/results) 目录下，每个子目录对应一个环境：
+- [results/acrobot/](file:///home/coco/workspaces/code_gongyu_rebuild/results/acrobot/)
+- [results/cliff_walking/](file:///home/coco/workspaces/code_gongyu_rebuild/results/cliff_walking/)
+- [results/maze/](file:///home/coco/workspaces/code_gongyu_rebuild/results/maze/)
+- [results/mountain_car/](file:///home/coco/workspaces/code_gongyu_rebuild/results/mountain_car/)
+
+每个目录下包含不同算法的.npy格式结果文件，可用于后续分析和绘图。
